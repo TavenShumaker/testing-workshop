@@ -1,7 +1,7 @@
 // snapshot testing
 import React from 'react'
 import {generate} from 'til-client-test-utils'
-import {renderIntoDocument, cleanup} from 'react-testing-library'
+import {renderIntoDocument, render, cleanup} from 'react-testing-library'
 import Login from '../login'
 
 afterEach(cleanup)
@@ -27,9 +27,11 @@ test('calls onSubmit with the username and password when submitted', () => {
   expect(handleSubmit).toHaveBeenCalledWith(fakeUser)
 })
 
+//snapshots are super fucking easy user render() to pull out the container
+//expect container.firstchild toMatchSnapshot()
 test('snapshot', () => {
-  // render the login, this will give you back an object with a `container` property
-  // expect the `container` property to match a snapshot
+  const { container } = render(<Login/>);//we don't need the props because those don't matter in a snapshot
+  expect(container.firstChild).toMatchSnapshot();
 })
 
 //////// Elaboration & Feedback /////////
