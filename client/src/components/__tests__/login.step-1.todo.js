@@ -52,3 +52,19 @@ test.skip('I submitted my elaboration and feedback', () => {
   expect(submitted).toBe(true)
 })
 ////////////////////////////////
+
+/* 
+So my take away from this challenge is that to understand what needs to be tested all that you need to do is think "how is the user going to be using this component", and translate that into all three parts of the testing process (Arrange, Act, Assert)
+
+Arrange: 
+- make sure that our component is rendered
+- find username and password input fields
+- assign those fields values
+
+Act:
+-press the submit button
+
+Assert:
+-ensure that the submit funtion was called
+-ensure that the submit funciton was called with the proper arguments
+*/

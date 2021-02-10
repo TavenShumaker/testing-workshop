@@ -3,6 +3,8 @@ import {generate} from 'til-client-test-utils'
 import {render, Simulate} from 'react-testing-library'
 import Login from '../login'
 
+//altering login.step1 to use react-testing-library
+
 test('calls onSubmit with the username and password when submitted', () => {
   // Arrange
   const fakeUser = generate.loginForm()

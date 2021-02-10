@@ -2,36 +2,49 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 // you'll need these:
-// import {generate} from 'til-client-test-utils'
-// import {render, Simulate} from 'react-testing-library'
+import {generate} from 'til-client-test-utils'
+import {render, Simulate} from 'react-testing-library'
 // note that til-client-test-utils is found in `client/test/til-client-test-utils`
 import Login from '../login'
+
+/*
+what do i need to do here?
+Arrange:
+-create a fake user
+-create a fake handle submit
+-render Login (returns a container, getByLabelText, getByText)
+
+-get input with label username and set value
+-get input with label password and set value
+-get the button with text submit
+
+Act:
+-simulate a submit action on the button
+
+Assess:
+-was handle submit called once
+-was it called with the correct args
+- was it called by a submit
+*/
 
 test('calls onSubmit with the username and password when submitted', () => {
   // Arrange
   // use generate.loginForm() here
-  const fakeUser = {username: 'chucknorris', password: '(╯°□°）╯︵ ┻━┻'}
+  const fakeUser = generate.loginForm()
   const handleSubmit = jest.fn()
-  // use: render(<Login onSubmit={handleSubmit} />)
-  // It'll give you back an object with
-  // `getByLabelText` and `getByText` functions
-  // so you don't need a div anymore!
-  const div = document.createElement('div')
-  ReactDOM.render(<Login onSubmit={handleSubmit} />, div)
+  const { container, getByLabelText, getByText } = render(<Login onSubmit={handleSubmit}/>);
 
-  const inputs = div.querySelectorAll('input')
-  const usernameNode = inputs[0]
-  const passwordNode = inputs[1]
-  const formNode = div.querySelector('form')
-  const submitButtonNode = div.querySelector('button')
+  const usernameNode = getByLabelText('Username');
+  const passwordNode = getByLabelText('Password');
+  const submitButtonNode = getByText('Submit');
+  //this is the only one that the user wouldn't be accessing by text, and you need to use query selector to get this element
+  const formNode = container.querySelector('form');
 
   usernameNode.value = fakeUser.username
   passwordNode.value = fakeUser.password
 
   // Act
-  // Use Simulate.submit(formNode) instead of these two lines
-  const event = new window.Event('submit')
-  formNode.dispatchEvent(event)
+  Simulate.submit(formNode);
 
   // Assert
   // no change necessary here
@@ -54,3 +67,9 @@ test.skip('I submitted my elaboration and feedback', () => {
   expect(submitted).toBe(true)
 })
 ////////////////////////////////
+
+/*
+The library simply makes things easier because it allows you to access elements the way that the user would access them. The parts that you need, like a form, that the user doesn't care about must be accessed classically using query selector.
+
+Buttons and text input fields are accessed by text and by labels just like they are acessed by a user.
+*/
