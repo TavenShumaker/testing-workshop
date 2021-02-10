@@ -1,7 +1,7 @@
 // dealing with react's simulated events
 import React from 'react'
 import {generate} from 'til-client-test-utils'
-import {render, Simulate} from 'react-testing-library'
+import {renderIntoDocument, cleanup} from 'react-testing-library'
 import Login from '../login'
 
 // Due to the fact that our element is not in the document, the
@@ -22,28 +22,28 @@ import Login from '../login'
 // Extra bonus, rather than manually inserting the container into the document
 // check out the docs for react-testing-library and the renderIntoDocument method!
 
+afterEach(cleanup);
+
 test('calls onSubmit with the username and password when submitted', () => {
   // Arrange
   const fakeUser = generate.loginForm()
   const handleSubmit = jest.fn()
-  const {container, getByLabelText, getByText} = render(
+  const {container, getByLabelText, getByText} = renderIntoDocument(
     <Login onSubmit={handleSubmit} />,
   )
 
   const usernameNode = getByLabelText('username')
   const passwordNode = getByLabelText('password')
-  const formNode = container.querySelector('form')
   const submitButtonNode = getByText('submit')
 
   // Act
   usernameNode.value = fakeUser.username
   passwordNode.value = fakeUser.password
-  Simulate.submit(formNode)
+  submitButtonNode.click();
 
   // Assert
   expect(handleSubmit).toHaveBeenCalledTimes(1)
   expect(handleSubmit).toHaveBeenCalledWith(fakeUser)
-  expect(submitButtonNode.type).toBe('submit')
 })
 
 //////// Elaboration & Feedback /////////
@@ -60,3 +60,7 @@ test.skip('I submitted my elaboration and feedback', () => {
   expect(submitted).toBe(true)
 })
 ////////////////////////////////
+
+/*
+Okay so that last one we still had to access the form via .querySelector, which as I mentioned there was the only part of this that didn't make any sense. Or better, it didn't make sense from the user perspective. We had to do that because our elements were never actually mounted to the document. That is great beacuse it means that no cleanup is necessary. But if you use 
+*/
